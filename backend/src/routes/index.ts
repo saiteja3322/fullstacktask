@@ -1,0 +1,22 @@
+import { Router } from 'express';
+import authRoutes from './auth.routes.js';
+import customerRoutes from './customer.routes.js';
+import productRoutes from './product.routes.js';
+import inventoryRoutes from './inventory.routes.js';
+import challanRoutes from './challan.routes.js';
+import invoiceRoutes from './invoice.routes.js';
+import dashboardRoutes from './dashboard.routes.js';
+import activityLogRoutes from './activityLog.routes.js';
+
+const router = Router();
+
+router.use('/auth', authRoutes);
+router.use('/customers', customerRoutes);
+router.use('/products', productRoutes);
+router.use('/inventory', inventoryRoutes);
+router.use('/challans', challanRoutes);
+router.use('/invoices', invoiceRoutes);
+router.use('/dashboard', dashboardRoutes);
+router.use('/activity-logs', activityLogRoutes);
+
+export default router;

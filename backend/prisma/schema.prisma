@@ -1,0 +1,176 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  SALES
+  WAREHOUSE
+  ACCOUNTS
+}
+
+enum CustomerType {
+  RETAIL
+  WHOLESALE
+  DISTRIBUTOR
+}
+
+enum CustomerStatus {
+  ACTIVE
+  INACTIVE
+  LEAD
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+  TRANSFER
+}
+
+enum ChallanStatus {
+  DRAFT
+  CONFIRMED
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PAID
+  CANCELLED
+}
+
+model User {
+  id                   String          @id @default(uuid())
+  name                 String
+  email                String          @unique
+  password             String
+  phone                String?
+  profileImage         String?
+  role                 Role            @default(SALES)
+  refreshToken         String?
+  isEmailVerified      Boolean         @default(false)
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  createdAt            DateTime        @default(now())
+  updatedAt            DateTime        @updatedAt
+
+  stockMovements       StockMovement[] @relation("UserStockMovements")
+  salesChallans        SalesChallan[]  @relation("UserSalesChallans")
+  activityLogs         ActivityLog[]
+
+  @@map("users")
+}
+
+model Customer {
+  id           String         @id @default(uuid())
+  customerName String
+  businessName String?
+  mobile       String
+  email        String?
+  GST          String?
+  customerType CustomerType   @default(RETAIL)
+  address      String?
+  status       CustomerStatus @default(LEAD)
+  followUpDate DateTime?
+  notes        String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  salesChallans SalesChallan[]
+
+  @@map("customers")
+}
+
+model Product {
+  id           String          @id @default(uuid())
+  name         String
+  sku          String          @unique
+  category     String
+  description  String?
+  price        Float
+  stock        Int             @default(0)
+  minimumStock Int             @default(5)
+  warehouse    String          @default("Main Warehouse")
+  image        String?
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  stockMovements StockMovement[]
+
+  @@map("products")
+}
+
+model StockMovement {
+  id           String       @id @default(uuid())
+  productId    String
+  product      Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantity     Int
+  movementType MovementType
+  reason       String?
+  createdBy    String
+  user         User         @relation("UserStockMovements", fields: [createdBy], references: [id])
+  createdAt    DateTime     @default(now())
+
+  @@map("stock_movements")
+}
+
+model SalesChallan {
+  id            String             @id @default(uuid())
+  challanNumber String             @unique
+  customerId    String
+  customer      Customer           @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  status        ChallanStatus      @default(DRAFT)
+  totalQuantity Int                @default(0)
+  grandTotal    Float              @default(0.0)
+  createdBy     String
+  user          User               @relation("UserSalesChallans", fields: [createdBy], references: [id])
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  items         SalesChallanItem[]
+  invoices      Invoice[]
+
+  @@map("sales_challans")
+}
+
+model SalesChallanItem {
+  id              String       @id @default(uuid())
+  challanId       String
+  challan         SalesChallan @relation(fields: [challanId], references: [id], onDelete: Cascade)
+  productSnapshot Json
+  price           Float
+  quantity        Int
+
+  @@map("sales_challan_items")
+}
+
+model Invoice {
+  id            String        @id @default(uuid())
+  invoiceNumber String        @unique
+  challanId     String
+  challan       SalesChallan  @relation(fields: [challanId], references: [id], onDelete: Cascade)
+  tax           Float         @default(0.0)
+  discount      Float         @default(0.0)
+  grandTotal    Float
+  status        InvoiceStatus @default(UNPAID)
+  createdAt     DateTime      @default(now())
+
+  @@map("invoices")
+}
+
+model ActivityLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String
+  module    String
+  timestamp DateTime @default(now())
+
+  @@map("activity_logs")
+}

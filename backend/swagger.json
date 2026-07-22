@@ -1,0 +1,64 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Mini ERP + CRM Operations Portal API",
+    "version": "1.0.0",
+    "description": "Production-ready Enterprise Mini ERP + CRM REST API with JWT Auth, Role-Based Control, and PDF Generation"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5000/api/v1",
+      "description": "Local Development Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "User Login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string", "example": "admin@erp.com" },
+                  "password": { "type": "string", "example": "Admin@123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Login successful with tokens returned" }
+        }
+      }
+    },
+    "/customers": {
+      "get": {
+        "summary": "List customers with search and filters",
+        "responses": { "200": { "description": "Paginated list of customers" } }
+      }
+    },
+    "/products": {
+      "get": {
+        "summary": "List product catalog",
+        "responses": { "200": { "description": "Paginated list of products" } }
+      }
+    }
+  }
+}
