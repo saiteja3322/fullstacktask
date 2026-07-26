@@ -15,6 +15,16 @@ A complete, production-grade enterprise Mini ERP + CRM Portal built with **Node.
 - 🎨 **Modern Design System**: Sleek glassmorphism visual identity, smooth framer-motion micro-interactions, full Dark & Light mode toggle.
 
 ---
+## 🌐 Live Demo
+
+- **Frontend (Netlify):**
+  https://erpmanagmentlive.netlify.app/
+
+- **Backend API (Render):**
+  https://fullstacktask-heeloworld-s.onrender.com
+
+- **API Documentation (Swagger):**
+  https://fullstacktask-heeloworld-s.onrender.com/api-docs
 
 ## Tech Stack Summary
 
