@@ -18,7 +18,7 @@ A complete, production-grade enterprise Mini ERP + CRM Portal built with **Node.
 ## 🌐 Live Demo
 
 - **Frontend (Netlify):**
-  https://erpmanagmentlive.netlify.app/
+  https://fundsroomerp.netlify.app/
 
 - **Backend API (Render):**
   https://fullstacktask-heeloworld-s.onrender.com
